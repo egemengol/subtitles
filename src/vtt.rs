@@ -51,18 +51,15 @@ fn match_until_empty_line(input: &str) -> IResult<&str, &str> {
 }
 
 fn parse_cue(input: &str) -> IResult<&str, Cue> {
-    println!("input: {:#?}", input);
     let (input, identifier) = if peek(parse_timestamp_line)(input).is_err() {
         let (input, id) = parse_cue_identifier(input)?;
         (input, Some(id))
     } else {
         (input, None)
     };
-    println!("identifier {:?}", identifier);
     let (input, (start, end)) = parse_timestamp_line(input)?;
     let (input, _) = line_ending(input)?;
     let (input, text) = match_until_empty_line(input)?;
-    println!("remaining: {:#?}", input);
 
     let mut text = text.to_string();
     if text.ends_with('\n') {
